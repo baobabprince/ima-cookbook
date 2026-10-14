@@ -29,6 +29,8 @@ import { TimerDock } from './components/TimerDock';
 import { ConversionCalculatorModal } from './components/ConversionCalculatorModal';
 import { RecipeEditorModal } from './components/RecipeEditorModal';
 import { PrintBookView } from './components/PrintBookView';
+import { PasswordAuthModal } from './components/PasswordAuthModal';
+import { isSessionAuthenticated, setSessionAuthenticated } from './utils/auth';
 
 const STORAGE_KEY = 'moms_kitchen_recipes_v1';
 
@@ -68,6 +70,26 @@ export default function App() {
   const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
   const [isExportingWord, setIsExportingWord] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
+  const executeWithAuth = (action: () => void) => {
+    if (isSessionAuthenticated()) {
+      action();
+    } else {
+      setPendingAction(() => action);
+      setIsAuthModalOpen(true);
+    }
+  };
+
+  const handleAuthSuccess = () => {
+    setSessionAuthenticated(true);
+    setIsAuthModalOpen(false);
+    if (pendingAction) {
+      pendingAction();
+      setPendingAction(null);
+    }
+  };
 
   // Active kitchen timers
   const [timers, setTimers] = useState<ActiveTimer[]>([]);
@@ -296,7 +318,7 @@ export default function App() {
           recipes={recipes}
           onExitPrintView={() => setViewMode('single')}
           onExportWord={handleExportWordClick}
-          onEditRecipe={(rec) => setEditingRecipe(rec)}
+          onEditRecipe={(rec) => executeWithAuth(() => setEditingRecipe(rec))}
         />
         <RecipeEditorModal
           recipe={editingRecipe}
@@ -345,7 +367,7 @@ export default function App() {
             המרת מידות ומחשבון
           </button>
           <button
-            onClick={handleAddNewRecipe}
+            onClick={() => executeWithAuth(handleAddNewRecipe)}
             className="hover:text-stone-900 hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
           >
             הוספת מתכון
@@ -676,7 +698,7 @@ export default function App() {
                   {/* Action Buttons */}
                   <div className="no-print flex items-center gap-2 shrink-0">
                     <button
-                      onClick={() => setEditingRecipe(activeRecipe)}
+                      onClick={() => executeWithAuth(() => setEditingRecipe(activeRecipe))}
                       className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-stone-800 bg-[#FBF9F5] border border-[#E7E2DA] rounded-lg hover:bg-stone-100 transition-colors whitespace-nowrap"
                     >
                       <Edit3 className="w-3.5 h-3.5 text-[#78350F]" />
@@ -1019,7 +1041,7 @@ export default function App() {
                           פתח במצב הכנה
                         </button>
                         <button
-                          onClick={() => setEditingRecipe(rec)}
+                          onClick={() => executeWithAuth(() => setEditingRecipe(rec))}
                           className="px-3 py-1.5 text-xs font-medium text-stone-700 bg-[#FBF9F5] border border-[#E7E2DA] rounded-lg hover:bg-stone-100"
                         >
                           עריכה
@@ -1166,7 +1188,7 @@ export default function App() {
               </button>
 
               <button
-                onClick={handleResetAllRecipes}
+                onClick={() => executeWithAuth(handleResetAllRecipes)}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
               >
                 <RotateCcw className="w-4 h-4" />
@@ -1185,6 +1207,16 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Password Authentication Modal */}
+      <PasswordAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          setPendingAction(null);
+        }}
+        onSuccess={handleAuthSuccess}
+      />
 
       {/* Floating Multi-Timer Kitchen Dock */}
       <TimerDock
