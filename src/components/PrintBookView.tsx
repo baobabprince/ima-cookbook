@@ -56,7 +56,7 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
       </div>
 
       {/* Book Container */}
-      <div className="max-w-4xl mx-auto px-6 py-10 print:p-0 space-y-12 print:space-y-0">
+      <div className="max-w-2xl mx-auto px-4 py-8 print:p-0 space-y-8 print:space-y-0">
         {/* Page 1: Classic Book Cover */}
         <section className="print-page-break bg-white border-2 border-[#D6CEBE] p-10 sm:p-16 text-center relative shadow-sm print:shadow-none min-h-[75vh] flex flex-col justify-between">
           <div className="border border-[#E7E2DA] p-8 sm:p-14 flex-1 flex flex-col items-center justify-center">

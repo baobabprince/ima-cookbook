@@ -27,8 +27,8 @@
 /* Custom print rules for the Decorated PDF Gift Book Edition */
 @media print {
   @page {
-    size: A4 portrait;
-    margin: 16mm 14mm 16mm 14mm;
+    size: A5 portrait;
+    margin: 10mm 8mm 10mm 8mm;
   }
 
   body {
