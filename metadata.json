@@ -1,0 +1,6 @@
+{
+  "name": "המטבח של אמא - ספר מתכונים",
+  "description": "ספר המתכונים המשפחתי המלא של אמא בעיצוב קלאסי, כולל מחשבון כמויות, המרת מידות, טיימרים חכמים, עריכה ישירה וייצוא למהדורת הדפסה (PDF) ולקובץ Word.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
