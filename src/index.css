@@ -54,7 +54,7 @@
     break-after: page;
   }
 
-  /* Recipe print container - ensure each recipe takes exactly 1 page */
+  /* Recipe print container - ensure page break per unit while avoiding split */
   .recipe-print-page {
     page-break-before: always;
     break-before: page;
@@ -62,14 +62,14 @@
     break-after: page;
     page-break-inside: avoid;
     break-inside: avoid;
-    height: 100vh;
+    min-height: 96vh;
     max-height: 100vh;
     box-sizing: border-box;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 2mm !important;
+    padding: 3mm !important;
     margin: 0 !important;
     border: 1px solid #D6CEBE !important;
   }
