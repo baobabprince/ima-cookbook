@@ -133,7 +133,6 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
               isCompact ? 'text-lg' : 'text-2xl print:text-xl'
             }`}
           >
-            <span className="font-normal font-sans text-stone-500 ml-1.5">{recipe.orderIndex}.</span>
             {recipe.title}
           </h3>
 

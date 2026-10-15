@@ -751,7 +751,6 @@ export default function App() {
                     </div>
 
                     <h1 className="text-3xl sm:text-4xl print:text-xl font-bold font-serif-hebrew text-stone-900 leading-tight">
-                      <span className="font-normal font-sans text-stone-500 ml-2">{activeRecipe.orderIndex}.</span>
                       {activeRecipe.title}
                     </h1>
 
@@ -1095,7 +1094,6 @@ export default function App() {
                           )}
                         </div>
                         <h2 className="text-2xl font-bold font-serif-hebrew text-stone-900">
-                          <span className="font-normal font-sans text-stone-500 ml-2">{rec.orderIndex}.</span>
                           {rec.title}
                         </h2>
                       </div>

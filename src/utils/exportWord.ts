@@ -165,13 +165,6 @@ export async function exportRecipesToWord(recipes: Recipe[]): Promise<void> {
         },
         children: [
           new TextRun({
-            text: `${recipe.orderIndex}. `,
-            size: 26,
-            color: '777777',
-            font: 'David',
-            rightToLeft: true,
-          }),
-          new TextRun({
             text: `${recipe.title}`,
             bold: true,
             size: 30,
