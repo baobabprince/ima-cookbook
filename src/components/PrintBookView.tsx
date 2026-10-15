@@ -259,7 +259,7 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] print:bg-white text-[#1C1917]">
+    <div className="min-h-screen bg-[#FBF9F5] print:bg-white text-[#512f00]">
       {/* Non-printing action bar */}
       <div className="no-print sticky top-0 z-30 bg-[#1C1917] text-[#FBF9F5] px-6 py-3.5 border-b border-stone-800 shadow-lg">
         <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-4">

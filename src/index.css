@@ -10,8 +10,12 @@
   body {
     font-family: var(--font-sans);
     background-color: #FBF9F5;
-    color: #1C1917;
+    color: #512f00;
     direction: rtl;
+  }
+
+  .text-stone-900 {
+    color: #512f00;
   }
 
   h1, h2, h3, h4, .font-serif-hebrew {
@@ -33,7 +37,7 @@
 
   html, body {
     background-color: #FFFFFF !important;
-    color: #1C1917 !important;
+    color: #512f00 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     width: 100%;

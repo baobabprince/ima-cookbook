@@ -400,7 +400,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#1C1917] pb-20">
+    <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#512f00] pb-20">
       {/* Strict 3-Zone Top Bar Contract */}
       <header className="no-print sticky top-0 z-30 flex items-center justify-between gap-8 px-6 py-4 bg-white/95 backdrop-blur border-b border-[#E7E2DA]">
         {/* Zone 1: Brand Title (single text element) */}
