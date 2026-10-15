@@ -133,7 +133,6 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
               isCompact ? 'text-lg' : 'text-2xl print:text-xl'
             }`}
           >
-            <span className="font-normal font-sans text-stone-500 ml-1.5">{recipe.orderIndex}.</span>
             {recipe.title}
           </h3>
 
@@ -223,16 +222,25 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
                 אופן ההכנה
               </h4>
               <ol
-                className={`space-y-1.5 text-stone-800 leading-relaxed ${
-                  isCompact ? 'text-[10px] print:text-[10px]' : 'text-xs sm:text-sm print:text-xs'
+                className={`space-y-2 text-stone-800 leading-relaxed ${
+                  isCompact ? 'text-[10px] print:text-[10px] space-y-1' : 'text-xs sm:text-sm print:text-xs'
                 }`}
               >
                 {recipe.steps.map((step, sIdx) => (
-                  <li key={sIdx} className="flex items-baseline gap-2">
-                    <span className="font-mono-tabular font-bold text-[#78350F] shrink-0">
-                      {sIdx + 1}.
+                  <li
+                    key={sIdx}
+                    className={`bg-white border border-[#E7E2DA] rounded-lg ${
+                      isCompact ? 'p-1.5' : 'p-2.5 print:p-2'
+                    } flex items-start gap-2`}
+                  >
+                    <span
+                      className={`font-mono-tabular font-bold text-[#78350F] bg-[#FBF9F5] border border-stone-300 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+                        isCompact ? 'w-4 h-4 text-[9px]' : 'w-5 h-5 text-xs print:w-4 print:h-4 print:text-[10px]'
+                      }`}
+                    >
+                      {sIdx + 1}
                     </span>
-                    <span>{step.text}</span>
+                    <span className="flex-1">{step.text}</span>
                   </li>
                 ))}
               </ol>
@@ -409,7 +417,7 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
         {tocPages.map((chunk, pIdx) => (
           <section
             key={`toc-page-${pIdx}`}
-            className="print-page-break bg-white border border-[#D6CEBE] p-8 sm:p-10 print:p-6 shadow-sm print:shadow-none min-h-[70vh] print:min-h-screen flex flex-col justify-between"
+            className="toc-print-page print-page-break bg-white border border-[#D6CEBE] p-8 sm:p-10 print:p-5 shadow-sm print:shadow-none min-h-[70vh] print:min-h-screen flex flex-col justify-between"
           >
             <div>
               <div className="text-center border-b border-[#E7E2DA] pb-4 print:pb-3 mb-6 print:mb-4">
