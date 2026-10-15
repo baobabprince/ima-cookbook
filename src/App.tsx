@@ -715,12 +715,12 @@ export default function App() {
           {viewMode === 'single' && activeRecipe && (
             <div className="space-y-6">
               {/* Recipe Card */}
-              <article className="bg-white border border-[#E7E2DA] rounded-xl p-6 sm:p-10 shadow-xs">
+              <article className="single-recipe-print-card bg-white border border-[#E7E2DA] rounded-xl p-6 sm:p-10 print:p-4 shadow-xs">
                 {/* Recipe Metadata & Actions Header */}
-                <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#E7E2DA] pb-6 mb-8">
-                  <div className="space-y-2 max-w-2xl">
+                <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#E7E2DA] pb-6 print:pb-2 mb-8 print:mb-3">
+                  <div className="space-y-2 print:space-y-0.5 max-w-2xl">
                     {/* Zero-pill unboxed metadata with typographic separators */}
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-stone-500">
+                    <div className="flex flex-wrap items-center gap-2 print:gap-1 text-xs print:text-[10px] text-stone-500">
                       <span className="font-mono-tabular font-bold text-[#78350F]">
                         מתכון #{activeRecipe.orderIndex} מתוך {recipes.length}
                       </span>
@@ -748,12 +748,12 @@ export default function App() {
                       )}
                     </div>
 
-                    <h1 className="text-3xl sm:text-4xl font-bold font-serif-hebrew text-stone-900 leading-tight">
+                    <h1 className="text-3xl sm:text-4xl print:text-xl font-bold font-serif-hebrew text-stone-900 leading-tight">
                       {activeRecipe.orderIndex}. {activeRecipe.title}
                     </h1>
 
                     {activeRecipe.prepNote && (
-                      <p className="text-sm text-stone-600 leading-relaxed pt-1">
+                      <p className="text-sm print:text-xs text-stone-600 leading-relaxed pt-1 print:pt-0">
                         {activeRecipe.prepNote}
                       </p>
                     )}
@@ -780,11 +780,11 @@ export default function App() {
                 </div>
 
                 {/* Two-Column Recipe Content */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 print:grid-cols-12 gap-8 print:gap-4">
                   {/* Ingredients Column (5 cols) */}
-                  <div className="lg:col-span-5 bg-[#FBF9F5] border border-[#E7E2DA] rounded-xl p-5 sm:p-6">
-                    <div className="flex items-center justify-between border-b border-[#E7E2DA] pb-3 mb-4">
-                      <h2 className="text-xl font-bold font-serif-hebrew text-stone-900">
+                  <div className="lg:col-span-5 print:col-span-5 bg-[#FBF9F5] border border-[#E7E2DA] rounded-xl p-5 sm:p-6 print:p-3">
+                    <div className="flex items-center justify-between border-b border-[#E7E2DA] pb-3 print:pb-1.5 mb-4 print:mb-2">
+                      <h2 className="text-xl print:text-sm font-bold font-serif-hebrew text-stone-900">
                         מצרכים
                       </h2>
                       {scaleFactor !== 1 && (
@@ -794,15 +794,15 @@ export default function App() {
                       )}
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-6 print:space-y-2">
                       {activeRecipe.ingredientGroups.map((group, gIdx) => (
                         <div key={gIdx}>
                           {group.groupTitle && (
-                            <h3 className="text-xs font-bold text-[#78350F] mb-2.5 tracking-wide">
+                            <h3 className="text-xs print:text-[10px] font-bold text-[#78350F] mb-2.5 print:mb-1 tracking-wide">
                               {group.groupTitle}
                             </h3>
                           )}
-                          <ul className="space-y-2.5">
+                          <ul className="space-y-2.5 print:space-y-1">
                             {group.items.map((ing, iIdx) => {
                               const checkKey = `${activeRecipe.id}-ing-${gIdx}-${iIdx}`;
                               const isChecked = Boolean(checkedIngredients[checkKey]);
@@ -815,7 +815,7 @@ export default function App() {
 
                               return (
                                 <li key={iIdx}>
-                                  <label className="flex items-start gap-2.5 cursor-pointer group select-none text-sm leading-snug">
+                                  <label className="flex items-start gap-2.5 print:gap-1.5 cursor-pointer group select-none text-sm print:text-xs leading-snug">
                                     <input
                                       type="checkbox"
                                       checked={isChecked}
@@ -841,7 +841,7 @@ export default function App() {
                                       )}
                                       <span>{f.displayItem}</span>
                                       {f.displayNote && (
-                                        <span className="text-xs text-stone-500 mr-1">
+                                        <span className="text-xs print:text-[10px] text-stone-500 mr-1">
                                           ({f.displayNote})
                                         </span>
                                       )}
@@ -862,18 +862,18 @@ export default function App() {
                   </div>
 
                   {/* Instructions & Timers Column (7 cols) */}
-                  <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+                  <div className="lg:col-span-7 print:col-span-7 flex flex-col justify-between space-y-6 print:space-y-2">
                     <div>
-                      <div className="flex items-center justify-between border-b border-[#E7E2DA] pb-3 mb-5">
-                        <h2 className="text-xl font-bold font-serif-hebrew text-stone-900">
+                      <div className="flex items-center justify-between border-b border-[#E7E2DA] pb-3 print:pb-1.5 mb-5 print:mb-2">
+                        <h2 className="text-xl print:text-sm font-bold font-serif-hebrew text-stone-900">
                           אופן ההכנה
                         </h2>
-                        <span className="text-xs text-stone-500">
+                        <span className="no-print text-xs text-stone-500">
                           לחצו על שלב לסימון או הפעילו טיימר
                         </span>
                       </div>
 
-                      <ol className="space-y-4">
+                      <ol className="space-y-4 print:space-y-2">
                         {activeRecipe.steps.map((step, sIdx) => {
                           const stepKey = `${activeRecipe.id}-step-${sIdx}`;
                           const isDone = Boolean(completedSteps[stepKey]);
@@ -881,29 +881,29 @@ export default function App() {
                           return (
                             <li
                               key={sIdx}
-                              className={`p-4 rounded-xl border transition-colors ${
+                              className={`p-4 print:p-2 rounded-xl print:rounded-lg border transition-colors ${
                                 isDone
                                   ? 'bg-[#FBF9F5]/60 border-stone-200 text-stone-400'
                                   : 'bg-white border-[#E7E2DA] hover:border-stone-300'
                               }`}
                             >
-                              <div className="flex items-start gap-3.5">
+                              <div className="flex items-start gap-3.5 print:gap-2">
                                 <button
                                   type="button"
                                   onClick={() => toggleStepCompleted(stepKey)}
-                                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono-tabular font-bold shrink-0 mt-0.5 transition-colors ${
+                                  className={`w-6 h-6 print:w-4 print:h-4 rounded-full flex items-center justify-center text-xs print:text-[10px] font-mono-tabular font-bold shrink-0 mt-0.5 transition-colors ${
                                     isDone
                                       ? 'bg-[#3F6212] text-white'
                                       : 'bg-[#FBF9F5] border border-stone-300 text-[#78350F] hover:border-[#78350F]'
                                   }`}
                                 >
-                                  {isDone ? <Check className="w-3.5 h-3.5" /> : sIdx + 1}
+                                  {isDone ? <Check className="w-3.5 h-3.5 print:w-2.5 print:h-2.5" /> : sIdx + 1}
                                 </button>
 
-                                <div className="flex-1 space-y-2.5">
+                                <div className="flex-1 space-y-2.5 print:space-y-0.5">
                                   <p
                                     onClick={() => toggleStepCompleted(stepKey)}
-                                    className={`text-base leading-relaxed cursor-pointer ${
+                                    className={`text-base print:text-xs leading-relaxed print:leading-snug cursor-pointer ${
                                       isDone ? 'line-through text-stone-400' : 'text-stone-800'
                                     }`}
                                   >
@@ -941,12 +941,12 @@ export default function App() {
 
                     {/* Tips Section */}
                     {activeRecipe.tips && activeRecipe.tips.length > 0 && (
-                      <div className="bg-[#FBF9F5] border border-[#E7E2DA] rounded-xl p-4 space-y-1.5">
-                        <div className="text-xs font-bold text-[#78350F]">
+                      <div className="bg-[#FBF9F5] border border-[#E7E2DA] rounded-xl p-4 print:p-2 space-y-1.5 print:space-y-0.5">
+                        <div className="text-xs print:text-[10px] font-bold text-[#78350F]">
                           טיפים והערות מהמחברת של אמא:
                         </div>
                         {activeRecipe.tips.map((tip, tIdx) => (
-                          <p key={tIdx} className="text-xs sm:text-sm text-stone-700 leading-relaxed">
+                          <p key={tIdx} className="text-xs sm:text-sm print:text-xs text-stone-700 leading-relaxed print:leading-snug">
                             • {tip}
                           </p>
                         ))}
