@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, FileText, Printer } from 'lucide-react';
 import { Recipe } from '../types/recipe';
 import { formatIngredient, MOMS_NOTEBOOK_CONVERSIONS } from '../utils/conversions';
+import { getCategoryEmoji } from '../utils/category';
 
 interface PrintBookViewProps {
   recipes: Recipe[];
@@ -102,7 +103,7 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
               isCompact ? 'text-[10px] mb-0.5' : 'text-xs mb-1'
             }`}
           >
-            <span className="font-mono-tabular font-bold text-[#78350F]">
+            <span className="font-mono-tabular font-normal text-stone-500">
               מתכון #{recipe.orderIndex}
             </span>
             <span aria-hidden="true">·</span>
@@ -132,7 +133,8 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
               isCompact ? 'text-lg' : 'text-2xl print:text-xl'
             }`}
           >
-            {recipe.orderIndex}. {recipe.title}
+            <span className="font-normal font-sans text-stone-500 ml-1.5">{recipe.orderIndex}.</span>
+            {recipe.title}
           </h3>
 
           {recipe.prepNote && (
@@ -432,16 +434,14 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
                     className="flex items-baseline justify-between py-1 border-b border-dotted border-stone-200 hover:text-[#78350F] transition-colors"
                   >
                     <span className="truncate pl-2">
-                      <strong className="font-mono-tabular text-[#78350F] ml-1.5">
+                      <span className="font-mono-tabular font-normal text-stone-500 ml-1.5">
                         {r.orderIndex}.
-                      </strong>
+                      </span>
                       <span className="font-medium text-stone-900">{r.title}</span>
                     </span>
-                    {r.source && (
-                      <span className="text-[10px] print:text-[10px] text-stone-400 shrink-0 truncate max-w-[100px]">
-                        {r.source}
-                      </span>
-                    )}
+                    <span className="text-xs print:text-[11px] shrink-0 ml-1" title={r.category}>
+                      {getCategoryEmoji(r.category)}
+                    </span>
                   </a>
                 ))}
               </div>

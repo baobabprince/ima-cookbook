@@ -9,6 +9,7 @@ import {
 } from 'docx';
 import { Recipe } from '../types/recipe';
 import { formatIngredient, MOMS_NOTEBOOK_CONVERSIONS } from './conversions';
+import { getCategoryEmoji } from './category';
 
 export async function exportRecipesToWord(recipes: Recipe[]): Promise<void> {
   const sortedRecipes = [...recipes].sort((a, b) => a.orderIndex - b.orderIndex);
@@ -127,16 +128,22 @@ export async function exportRecipesToWord(recipes: Recipe[]): Promise<void> {
         spacing: { after: 60 },
         children: [
           new TextRun({
-            text: `${r.orderIndex}. ${r.title}`,
+            text: `${r.orderIndex}. `,
+            size: 20,
+            color: '777777',
+            font: 'Arial',
+            rightToLeft: true,
+          }),
+          new TextRun({
+            text: `${r.title}`,
             bold: true,
             size: 22,
             font: 'Arial',
             rightToLeft: true,
           }),
           new TextRun({
-            text: `  [${r.category}${r.source ? ` · ${r.source}` : ''}]`,
+            text: `  ${getCategoryEmoji(r.category)}`,
             size: 20,
-            color: '666666',
             font: 'Arial',
             rightToLeft: true,
           }),
@@ -158,7 +165,14 @@ export async function exportRecipesToWord(recipes: Recipe[]): Promise<void> {
         },
         children: [
           new TextRun({
-            text: `${recipe.orderIndex}. ${recipe.title}`,
+            text: `${recipe.orderIndex}. `,
+            size: 26,
+            color: '777777',
+            font: 'David',
+            rightToLeft: true,
+          }),
+          new TextRun({
+            text: `${recipe.title}`,
             bold: true,
             size: 30,
             font: 'David',
