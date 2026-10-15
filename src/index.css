@@ -70,18 +70,22 @@
     break-after: page;
   }
 
-  /* Recipe print container - ensure page break per unit while avoiding split */
+  /* Page units (Cover, Conversion Table, TOC pages, Recipe pages) - unbroken single pages */
+  .toc-print-page,
   .recipe-print-page {
     page-break-before: always;
     break-before: page;
     page-break-after: always;
     break-after: page;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    min-height: 96vh;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
     max-height: 100vh;
     box-sizing: border-box;
     overflow: hidden;
+  }
+
+  .recipe-print-page {
+    min-height: 96vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
