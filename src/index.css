@@ -28,14 +28,17 @@
 @media print {
   @page {
     size: A5 portrait;
-    margin: 10mm 8mm 10mm 8mm;
+    margin: 6mm 6mm 6mm 6mm;
   }
 
-  body {
+  html, body {
     background-color: #FFFFFF !important;
     color: #1C1917 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .no-print {
@@ -49,6 +52,26 @@
   .print-page-break {
     page-break-after: always;
     break-after: page;
+  }
+
+  /* Recipe print container - ensure each recipe takes exactly 1 page */
+  .recipe-print-page {
+    page-break-before: always;
+    break-before: page;
+    page-break-after: always;
+    break-after: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    height: 100vh;
+    max-height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 2mm !important;
+    margin: 0 !important;
+    border: 1px solid #D6CEBE !important;
   }
 
   .print-avoid-break {
