@@ -32,7 +32,7 @@ jobs:
       - name: Build
         run: bun run build
         env:
-          # Public build – do not inject secrets that should stay private
+          VITE_GITHUB_TOKEN: ${{ secrets.VITE_GITHUB_TOKEN }}
           VITE_GITHUB_OWNER: baobabprince
           VITE_GITHUB_REPO: ima-cookbook
           VITE_GITHUB_BRANCH: main
