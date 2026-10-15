@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Edit3,
   FileText,
+  GitBranch,
   ListOrdered,
   Plus,
   Printer,
@@ -31,6 +32,12 @@ import { RecipeEditorModal } from './components/RecipeEditorModal';
 import { PrintBookView } from './components/PrintBookView';
 import { PasswordAuthModal } from './components/PasswordAuthModal';
 import { isSessionAuthenticated, setSessionAuthenticated } from './utils/auth';
+import {
+  fetchRecipesFromGitHub,
+  isGitHubSyncConfigured,
+  saveAllRecipesToGitHub,
+  saveRecipeToGitHub,
+} from './utils/githubSync';
 
 const STORAGE_KEY = 'moms_kitchen_recipes_v1';
 
@@ -69,6 +76,7 @@ export default function App() {
   const [editingRecipe, setEditingRecipe] = useState<Recipe | null>(null);
   const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
   const [isExportingWord, setIsExportingWord] = useState<boolean>(false);
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
@@ -93,6 +101,28 @@ export default function App() {
 
   // Active kitchen timers
   const [timers, setTimers] = useState<ActiveTimer[]>([]);
+
+  // Sync recipes from GitHub on initial app startup
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLatestFromGitHub() {
+      try {
+        setIsSyncing(true);
+        const { recipes: remoteRecipes } = await fetchRecipesFromGitHub();
+        if (isMounted && Array.isArray(remoteRecipes) && remoteRecipes.length > 0) {
+          setRecipes(remoteRecipes);
+        }
+      } catch {
+        // Keep current state/localStorage if offline or not configured
+      } finally {
+        if (isMounted) setIsSyncing(false);
+      }
+    }
+    loadLatestFromGitHub();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Save recipes to localStorage whenever modified
   useEffect(() => {
@@ -135,7 +165,7 @@ export default function App() {
     setToastMessage(msg);
     setTimeout(() => {
       setToastMessage((prev) => (prev === msg ? null : prev));
-    }, 3200);
+    }, 3500);
   };
 
   // Filtered recipes preserving exact sequential orderIndex
@@ -242,7 +272,8 @@ export default function App() {
     setTimers((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const handleSaveRecipe = (updated: Recipe) => {
+  const handleSaveRecipe = async (updated: Recipe) => {
+    // 1. Instantly update local state & localStorage
     setRecipes((prev) => {
       const exists = prev.some((r) => r.id === updated.id);
       if (exists) {
@@ -251,7 +282,23 @@ export default function App() {
       return [...prev, updated];
     });
     setSelectedRecipeId(updated.id);
-    showToast(`המתכון "${updated.title}" נשמר בהצלחה`);
+
+    // 2. Sync changes to Git if configured
+    if (isGitHubSyncConfigured()) {
+      showToast(`שומר ומסנכרן את "${updated.title}" ל-Git...`);
+      setIsSyncing(true);
+      const res = await saveRecipeToGitHub(updated);
+      setIsSyncing(false);
+
+      if (res.success) {
+        setRecipes(res.recipes);
+        showToast(`המתכון "${updated.title}" נשמר וסונכרן בהצלחה ל-Git`);
+      } else {
+        showToast(`המתכון נשמר בדפדפן המקומי (${res.error || 'שגיאת סנכרון ל-Git'})`);
+      }
+    } else {
+      showToast(`המתכון "${updated.title}" נשמר בהצלחה בדפדפן המקומי`);
+    }
   };
 
   const handleAddNewRecipe = () => {
@@ -279,15 +326,32 @@ export default function App() {
   const handleResetSingleRecipe = (recipeId: string) => {
     const original = INITIAL_RECIPES.find((r) => r.id === recipeId);
     if (!original) return;
-    setRecipes((prev) => prev.map((r) => (r.id === recipeId ? original : r)));
-    showToast(`המתכון "${original.title}" שוחזר לנוסח המקורי`);
+    handleSaveRecipe(original);
   };
 
-  const handleResetAllRecipes = () => {
+  const handleResetAllRecipes = async () => {
     setRecipes(INITIAL_RECIPES);
     localStorage.removeItem(STORAGE_KEY);
     setIsResetModalOpen(false);
-    showToast('כל המתכונים שוחזרו לנוסח הערוך המקורי');
+
+    if (isGitHubSyncConfigured()) {
+      showToast('מאפס ומעדכן את Git...');
+      setIsSyncing(true);
+      const res = await saveAllRecipesToGitHub(
+        INITIAL_RECIPES,
+        'איפוס כל המתכונים לנוסח ההתחלתי'
+      );
+      setIsSyncing(false);
+
+      if (res.success) {
+        setRecipes(res.recipes);
+        showToast('כל המתכונים שוחזרו וסונכרנו בהצלחה ל-Git');
+      } else {
+        showToast('כל המתכונים שוחזרו בדפדפן המקומי');
+      }
+    } else {
+      showToast('כל המתכונים שוחזרו לנוסח הערוך המקורי');
+    }
   };
 
   const handleExportWordClick = async () => {
@@ -1150,11 +1214,30 @@ export default function App() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-[#FBF9F5] border border-[#E7E2DA] rounded-xl max-w-md w-full p-6 space-y-5 shadow-2xl">
             <h3 className="text-lg font-bold font-serif-hebrew text-stone-900">
-              ניהול נתוני הספר, ייצוא וגיבוי
+              ניהול נתוני הספר, סנכרון וגיבוי
             </h3>
             <p className="text-xs text-stone-600 leading-relaxed">
-              כל העריכות שלך נשמרות אוטומטית בדפדפן. מכאן ניתן להוריד גיבוי של הספר, להוריד קובץ Word או לאפס את כל המתכונים לנוסח הערוך המקורי.
+              שינויים שתבצעו יישמרו ויסונכרנו ל-Git (GitHub) במידה ומוגדר VITE_GITHUB_TOKEN, או יישמרו בדפדפן המקומי.
             </p>
+
+            <div className="p-3 bg-[#FBF9F5] border border-[#E7E2DA] rounded-lg text-xs space-y-1">
+              <div className="flex items-center gap-2 font-bold text-stone-800">
+                <GitBranch className="w-4 h-4 text-[#78350F]" />
+                <span>סטטוס סנכרון Git:</span>
+                <span
+                  className={
+                    isGitHubSyncConfigured() ? 'text-emerald-700 font-bold' : 'text-amber-800 font-bold'
+                  }
+                >
+                  {isGitHubSyncConfigured() ? 'פעיל (סנכרון מול GitHub)' : 'מקומי (בדפדפן בלבד)'}
+                </span>
+              </div>
+              {!isGitHubSyncConfigured() && (
+                <p className="text-[11px] text-stone-500 leading-snug">
+                  להפעלת סנכרון אוטומטי מול GitHub לכל המשתמשים, יש להגדיר את המשתנה VITE_GITHUB_TOKEN בקובץ .env.
+                </p>
+              )}
+            </div>
 
             <div className="space-y-2.5">
               <button
@@ -1189,7 +1272,8 @@ export default function App() {
 
               <button
                 onClick={() => executeWithAuth(handleResetAllRecipes)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                disabled={isSyncing}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
               >
                 <RotateCcw className="w-4 h-4" />
                 אפס את כל המתכונים לנוסח ההתחלתי
