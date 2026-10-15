@@ -39,6 +39,13 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
 }) => {
   const sortedRecipes = [...recipes].sort((a, b) => a.orderIndex - b.orderIndex);
 
+  // Split TOC into clean pages (e.g. 50 items per page) to prevent border overflow
+  const TOC_ITEMS_PER_PAGE = 50;
+  const tocPages: Recipe[][] = [];
+  for (let i = 0; i < sortedRecipes.length; i += TOC_ITEMS_PER_PAGE) {
+    tocPages.push(sortedRecipes.slice(i, i + TOC_ITEMS_PER_PAGE));
+  }
+
   // Group sequential recipes into print page units
   // Each unit is either a single recipe OR a pair of two short consecutive recipes
   type PageUnit =
@@ -396,36 +403,55 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
           </div>
         </section>
 
-        {/* Page 3: Numbered Table of Contents */}
-        <section className="print-page-break bg-white border border-[#D6CEBE] p-8 sm:p-12 print:p-6 shadow-sm print:shadow-none">
-          <div className="text-center border-b border-[#E7E2DA] pb-5 print:pb-3 mb-6 print:mb-4">
-            <h2 className="text-3xl print:text-2xl font-bold font-serif-hebrew text-stone-900">
-              תוכן העניינים (לפי סדר הופעת המתכונים)
-            </h2>
-          </div>
+        {/* Page 3+: Table of Contents divided into clean self-contained pages */}
+        {tocPages.map((chunk, pIdx) => (
+          <section
+            key={`toc-page-${pIdx}`}
+            className="print-page-break bg-white border border-[#D6CEBE] p-8 sm:p-10 print:p-6 shadow-sm print:shadow-none min-h-[70vh] print:min-h-screen flex flex-col justify-between"
+          >
+            <div>
+              <div className="text-center border-b border-[#E7E2DA] pb-4 print:pb-3 mb-6 print:mb-4">
+                <h2 className="text-3xl print:text-2xl font-bold font-serif-hebrew text-stone-900">
+                  תוכן העניינים
+                  {tocPages.length > 1 && (
+                    <span className="text-base font-normal text-stone-500 mr-2">
+                      ({pIdx + 1} מתוך {tocPages.length})
+                    </span>
+                  )}
+                </h2>
+                <div className="text-xs text-stone-500 mt-1">
+                  מתכונים #{chunk[0]?.orderIndex} עד #{chunk[chunk.length - 1]?.orderIndex} לפי הסדר המקורי בספר
+                </div>
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-2 gap-x-6 gap-y-1.5 text-xs print:text-xs">
-            {sortedRecipes.map((r) => (
-              <a
-                key={r.id}
-                href={`#print-recipe-${r.orderIndex}`}
-                className="flex items-baseline justify-between py-0.5 border-b border-dotted border-stone-200 hover:text-[#78350F] transition-colors"
-              >
-                <span className="truncate pl-2">
-                  <strong className="font-mono-tabular text-[#78350F] ml-1.5">
-                    {r.orderIndex}.
-                  </strong>
-                  {r.title}
-                </span>
-                {r.source && (
-                  <span className="text-[11px] print:text-[10px] text-stone-400 shrink-0 truncate max-w-[90px]">
-                    {r.source}
-                  </span>
-                )}
-              </a>
-            ))}
-          </div>
-        </section>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 print:grid-cols-2 gap-x-8 gap-y-1.5 text-xs print:text-[11px]">
+                {chunk.map((r) => (
+                  <a
+                    key={r.id}
+                    href={`#print-recipe-${r.orderIndex}`}
+                    className="flex items-baseline justify-between py-1 border-b border-dotted border-stone-200 hover:text-[#78350F] transition-colors"
+                  >
+                    <span className="truncate pl-2">
+                      <strong className="font-mono-tabular text-[#78350F] ml-1.5">
+                        {r.orderIndex}.
+                      </strong>
+                      <span className="font-medium text-stone-900">{r.title}</span>
+                    </span>
+                    {r.source && (
+                      <span className="text-[10px] print:text-[10px] text-stone-400 shrink-0 truncate max-w-[100px]">
+                        {r.source}
+                      </span>
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="text-center pt-4 mt-6 border-t border-[#E7E2DA] text-[11px] text-stone-400 font-mono-tabular">
+              עמוד תוכן {pIdx + 1}
+            </div>
+          </section>
+        ))}
 
         {/* Recipes List - Grouped into print pages */}
         <div className="space-y-8 print:space-y-0">
