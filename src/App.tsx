@@ -32,6 +32,7 @@ import { RecipeEditorModal } from './components/RecipeEditorModal';
 import { PrintBookView } from './components/PrintBookView';
 import { PasswordAuthModal } from './components/PasswordAuthModal';
 import { isSessionAuthenticated, setSessionAuthenticated } from './utils/auth';
+import { getCategoryEmoji } from './utils/category';
 import {
   fetchRecipesFromGitHub,
   isGitHubSyncConfigured,
@@ -399,7 +400,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#1C1917] pb-20">
+    <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#512f00] pb-20">
       {/* Strict 3-Zone Top Bar Contract */}
       <header className="no-print sticky top-0 z-30 flex items-center justify-between gap-8 px-6 py-4 bg-white/95 backdrop-blur border-b border-[#E7E2DA]">
         {/* Zone 1: Brand Title (single text element) */}
@@ -487,6 +488,7 @@ export default function App() {
             </button>
             {RECIPE_CATEGORIES.map((cat) => {
               const count = recipes.filter((r) => r.category === cat).length;
+              const emoji = getCategoryEmoji(cat);
               return (
                 <button
                   key={cat}
@@ -497,7 +499,7 @@ export default function App() {
                       : 'bg-[#FBF9F5] text-stone-600 hover:text-stone-900 border border-[#E7E2DA]'
                   }`}
                 >
-                  {cat} ({count})
+                  {emoji} {cat} ({count})
                 </button>
               );
             })}
@@ -604,7 +606,7 @@ export default function App() {
                   >
                     <div className="min-w-0 flex-1">
                       <div className="text-xs sm:text-sm truncate">
-                        <span className="font-mono-tabular text-xs font-bold text-[#78350F] ml-1.5">
+                        <span className="font-mono-tabular text-xs font-normal text-stone-500 ml-1.5">
                           {rec.orderIndex}.
                         </span>
                         {rec.title}
@@ -721,7 +723,7 @@ export default function App() {
                   <div className="space-y-2 print:space-y-0.5 max-w-2xl">
                     {/* Zero-pill unboxed metadata with typographic separators */}
                     <div className="flex flex-wrap items-center gap-2 print:gap-1 text-xs print:text-[10px] text-stone-500">
-                      <span className="font-mono-tabular font-bold text-[#78350F]">
+                      <span className="font-mono-tabular font-normal text-stone-500">
                         מתכון #{activeRecipe.orderIndex} מתוך {recipes.length}
                       </span>
                       <span aria-hidden="true">·</span>
@@ -749,7 +751,8 @@ export default function App() {
                     </div>
 
                     <h1 className="text-3xl sm:text-4xl print:text-xl font-bold font-serif-hebrew text-stone-900 leading-tight">
-                      {activeRecipe.orderIndex}. {activeRecipe.title}
+                      <span className="font-normal font-sans text-stone-500 ml-2">{activeRecipe.orderIndex}.</span>
+                      {activeRecipe.title}
                     </h1>
 
                     {activeRecipe.prepNote && (
@@ -966,7 +969,8 @@ export default function App() {
                       <div>
                         <div className="text-[11px] text-stone-400">המתכון הקודם בספר</div>
                         <div className="text-xs sm:text-sm font-semibold text-stone-800 group-hover:text-[#78350F]">
-                          #{prevRecipe.orderIndex} {prevRecipe.title}
+                          <span className="font-normal text-stone-500 ml-1">#{prevRecipe.orderIndex}</span>
+                          {prevRecipe.title}
                         </div>
                       </div>
                     </button>
@@ -982,7 +986,8 @@ export default function App() {
                       <div>
                         <div className="text-[11px] text-stone-400">המתכון הבא בספר</div>
                         <div className="text-xs sm:text-sm font-semibold text-stone-800 group-hover:text-[#78350F]">
-                          #{nextRecipe.orderIndex} {nextRecipe.title}
+                          <span className="font-normal text-stone-500 ml-1">#{nextRecipe.orderIndex}</span>
+                          {nextRecipe.title}
                         </div>
                       </div>
                       <ChevronLeft className="w-4 h-4 text-stone-400 group-hover:text-[#78350F]" />
@@ -1065,7 +1070,7 @@ export default function App() {
                     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#E7E2DA] pb-4 mb-4">
                       <div>
                         <div className="flex flex-wrap items-center gap-2 text-xs text-stone-500 mb-1">
-                          <span className="font-mono-tabular font-bold text-[#78350F]">
+                          <span className="font-mono-tabular font-normal text-stone-500">
                             מתכון #{rec.orderIndex}
                           </span>
                           <span aria-hidden="true">·</span>
@@ -1090,7 +1095,8 @@ export default function App() {
                           )}
                         </div>
                         <h2 className="text-2xl font-bold font-serif-hebrew text-stone-900">
-                          {rec.orderIndex}. {rec.title}
+                          <span className="font-normal font-sans text-stone-500 ml-2">{rec.orderIndex}.</span>
+                          {rec.title}
                         </h2>
                       </div>
 
