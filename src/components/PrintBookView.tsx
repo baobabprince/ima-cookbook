@@ -85,7 +85,7 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
         key={recipe.id}
         id={`print-recipe-${recipe.orderIndex}`}
         className={`bg-white rounded-lg relative group ${
-          isCompact ? 'p-3 text-xs' : 'p-6 sm:p-8 print:p-5'
+          isCompact ? 'p-3 text-xs print:p-2.5' : 'p-6 sm:p-8 print:p-4'
         }`}
       >
         {/* Edit button in preview */}
@@ -216,21 +216,23 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
             <div>
               <h4
                 className={`font-bold font-serif-hebrew text-stone-900 border-b border-[#E7E2DA] ${
-                  isCompact ? 'text-xs mb-1.5 pb-1' : 'text-sm mb-2.5 pb-1.5'
+                  isCompact ? 'text-xs mb-1.5 pb-1' : 'text-sm mb-2 pb-1'
                 }`}
               >
                 אופן ההכנה
               </h4>
               <ol
                 className={`space-y-2 text-stone-800 leading-relaxed ${
-                  isCompact ? 'text-[10px] print:text-[10px] space-y-1' : 'text-xs sm:text-sm print:text-xs'
+                  isCompact
+                    ? 'text-[11px] print:text-[11px] space-y-1'
+                    : 'text-xs sm:text-sm print:text-xs print:leading-normal space-y-1.5'
                 }`}
               >
                 {recipe.steps.map((step, sIdx) => (
                   <li
                     key={sIdx}
                     className={`bg-white border border-[#E7E2DA] rounded-lg ${
-                      isCompact ? 'p-1.5' : 'p-2.5 print:p-2'
+                      isCompact ? 'p-1.5' : 'p-2 sm:p-2.5 print:p-1.5'
                     } flex items-start gap-2`}
                   >
                     <span
@@ -249,7 +251,7 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
             {recipe.tips && recipe.tips.length > 0 && (
               <div
                 className={`border-t border-dashed border-[#E7E2DA] text-stone-600 ${
-                  isCompact ? 'mt-2 pt-1.5 text-[10px]' : 'mt-4 pt-3 text-xs'
+                  isCompact ? 'mt-2 pt-1.5 text-[10px]' : 'mt-3 pt-2 text-xs print:text-[11px]'
                 }`}
               >
                 {recipe.tips.map((tip, tIdx) => (
@@ -346,67 +348,67 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
         </section>
 
         {/* Page 2: Mom's Unit Conversion Table */}
-        <section className="print-page-break bg-white border border-[#D6CEBE] p-8 sm:p-12 print:p-6 shadow-sm print:shadow-none print:min-h-screen print:flex print:flex-col print:justify-center">
-          <div className="text-center border-b border-[#E7E2DA] pb-6 print:pb-4 mb-8 print:mb-6">
-            <div className="text-xs text-[#78350F] font-medium mb-1">עמוד פתיחה</div>
-            <h2 className="text-3xl print:text-2xl font-bold font-serif-hebrew text-stone-900">
+        <section className="print-page-break conversion-print-page bg-white border border-[#D6CEBE] p-8 sm:p-12 print:p-4 shadow-sm print:shadow-none flex flex-col justify-between">
+          <div className="text-center border-b border-[#E7E2DA] pb-4 print:pb-2 mb-6 print:mb-3">
+            <div className="text-xs text-[#78350F] font-medium mb-0.5">עמוד פתיחה</div>
+            <h2 className="text-3xl print:text-xl font-bold font-serif-hebrew text-stone-900">
               המרת יחידות ומידות אפייה
             </h2>
           </div>
 
-          <div className="divide-y divide-[#E7E2DA] border border-[#E7E2DA] rounded-lg overflow-hidden mb-8 print:mb-6">
+          <div className="divide-y divide-[#E7E2DA] border border-[#E7E2DA] rounded-lg overflow-hidden mb-6 print:mb-3">
             {MOMS_NOTEBOOK_CONVERSIONS.map((row, idx) => (
               <div
                 key={idx}
-                className="p-4 print:p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#FBF9F5]/60"
+                className="p-4 print:py-1.5 print:px-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1 bg-[#FBF9F5]/60"
               >
-                <div className="text-base print:text-sm">
+                <div className="text-base print:text-xs">
                   <span className="font-bold text-stone-900">{row.title}</span>
-                  <span className="mx-3 print:mx-2 text-[#78350F] font-bold">=</span>
+                  <span className="mx-3 print:mx-1.5 text-[#78350F] font-bold">=</span>
                   <span className="font-bold text-[#78350F]">{row.equivalent}</span>
                 </div>
-                {row.note && <span className="text-xs print:text-xs text-stone-500">{row.note}</span>}
+                {row.note && <span className="text-xs print:text-[10px] text-stone-500">{row.note}</span>}
               </div>
             ))}
           </div>
 
-          <h3 className="text-lg print:text-base font-bold font-serif-hebrew text-stone-900 mb-3 print:mb-3">
+          <h3 className="text-lg print:text-xs font-bold font-serif-hebrew text-stone-900 mb-3 print:mb-1.5">
             מידות כוס וסטנדרטים שימושיים במטבח (כוס = 240 מ"ל)
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 print:gap-2 text-xs print:text-xs text-stone-700">
-            <div className="p-3 print:p-2 border border-[#E7E2DA] rounded">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 print:gap-1.5 text-xs print:text-[10px] text-stone-700">
+            <div className="p-3 print:p-1.5 border border-[#E7E2DA] rounded">
               <strong className="block text-stone-900">1 כוס קמח לבן / תופח</strong>
               140 גרם (כף = 10 גרם)
             </div>
-            <div className="p-3 print:p-2 border border-[#E7E2DA] rounded">
+            <div className="p-3 print:p-1.5 border border-[#E7E2DA] rounded">
               <strong className="block text-stone-900">1 כוס קמח מלא</strong>
               125–130 גרם
             </div>
-            <div className="p-3 print:p-2 border border-[#E7E2DA] rounded">
+            <div className="p-3 print:p-1.5 border border-[#E7E2DA] rounded">
               <strong className="block text-stone-900">1 כוס סוכר לבן</strong>
               200 גרם (כף = 12 גרם)
             </div>
-            <div className="p-3 print:p-2 border border-[#E7E2DA] rounded">
+            <div className="p-3 print:p-1.5 border border-[#E7E2DA] rounded">
               <strong className="block text-stone-900">1 כוס סוכר חום דחוס</strong>
               220 גרם
             </div>
-            <div className="p-3 print:p-2 border border-[#E7E2DA] rounded">
+            <div className="p-3 print:p-1.5 border border-[#E7E2DA] rounded">
               <strong className="block text-stone-900">1 כוס אבקת סוכר</strong>
               120 גרם
             </div>
-            <div className="p-3 print:p-2 border border-[#E7E2DA] rounded">
+            <div className="p-3 print:p-1.5 border border-[#E7E2DA] rounded">
               <strong className="block text-stone-900">1 כוס קקאו / קורנפלור</strong>
               140 גרם (כף = 10 גרם)
             </div>
-            <div className="p-3 print:p-2 border border-[#E7E2DA] rounded">
+            <div className="p-3 print:p-1.5 border border-[#E7E2DA] rounded">
               <strong className="block text-stone-900">1 כוס שמן</strong>
               200 גרם / 240 מ"ל
             </div>
-            <div className="p-3 print:p-2 border border-[#E7E2DA] rounded">
+            <div className="p-3 print:p-1.5 border border-[#E7E2DA] rounded">
               <strong className="block text-stone-900">1 חבילת חמאה / מרגרינה</strong>
               200 גרם (או ¾ כוס שמן)
             </div>
-            <div className="p-3 print:p-2 border border-[#E7E2DA] rounded">
+            <div className="p-3 print:p-1.5 border border-[#E7E2DA] rounded">
               <strong className="block text-stone-900">1 שקית אבקת אפייה / וניל</strong>
               10 גרם (כף שטוחה / 2 כפיות)
             </div>
