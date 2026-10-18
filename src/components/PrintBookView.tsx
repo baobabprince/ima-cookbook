@@ -40,8 +40,8 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
 }) => {
   const sortedRecipes = [...recipes].sort((a, b) => a.orderIndex - b.orderIndex);
 
-  // Split TOC into clean pages (e.g. 50 items per page) to prevent border overflow
-  const TOC_ITEMS_PER_PAGE = 50;
+  // Split TOC into clean pages (e.g. 36 items per page) to prevent border overflow
+  const TOC_ITEMS_PER_PAGE = 36;
   const tocPages: Recipe[][] = [];
   for (let i = 0; i < sortedRecipes.length; i += TOC_ITEMS_PER_PAGE) {
     tocPages.push(sortedRecipes.slice(i, i + TOC_ITEMS_PER_PAGE));
@@ -419,24 +419,21 @@ export const PrintBookView: React.FC<PrintBookViewProps> = ({
         {tocPages.map((chunk, pIdx) => (
           <section
             key={`toc-page-${pIdx}`}
-            className="toc-print-page print-page-break bg-white border border-[#D6CEBE] p-8 sm:p-10 print:p-5 shadow-sm print:shadow-none min-h-[70vh] print:min-h-screen flex flex-col justify-between"
+            className="toc-print-page print-page-break bg-white border border-[#D6CEBE] p-8 sm:p-10 print:p-4 shadow-sm print:shadow-none flex flex-col justify-between"
           >
             <div>
-              <div className="text-center border-b border-[#E7E2DA] pb-4 print:pb-3 mb-6 print:mb-4">
-                <h2 className="text-3xl print:text-2xl font-bold font-serif-hebrew text-stone-900">
+              <div className="text-center border-b border-[#E7E2DA] pb-3 print:pb-2 mb-5 print:mb-3">
+                <h2 className="text-3xl print:text-xl font-bold font-serif-hebrew text-stone-900">
                   תוכן העניינים
                   {tocPages.length > 1 && (
-                    <span className="text-base font-normal text-stone-500 mr-2">
+                    <span className="text-base print:text-sm font-normal text-stone-500 mr-2">
                       ({pIdx + 1} מתוך {tocPages.length})
                     </span>
                   )}
                 </h2>
-                <div className="text-xs text-stone-500 mt-1">
-                  מתכונים #{chunk[0]?.orderIndex} עד #{chunk[chunk.length - 1]?.orderIndex} לפי הסדר המקורי בספר
-                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 print:grid-cols-2 gap-x-8 gap-y-1.5 text-xs print:text-[11px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 print:grid-cols-2 gap-x-8 gap-y-1 text-xs print:text-[11px]">
                 {chunk.map((r) => (
                   <a
                     key={r.id}
